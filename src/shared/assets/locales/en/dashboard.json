@@ -1,0 +1,10 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome to admin panel",
+  "stats": {
+    "totalUsers": "Total users",
+    "activeUsers": "Active users",
+    "totalOrders": "Total orders"
+  }
+}
+

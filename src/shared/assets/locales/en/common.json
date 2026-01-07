@@ -1,0 +1,28 @@
+{
+  "loading": "Loading...",
+  "error": "Error",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "search": "Search",
+  "dashboard": "Dashboard",
+  "users": "Users",
+  "settings": "Settings",
+  "logout": "Logout",
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "role": "Role",
+  "actions": "Actions",
+  "create": "Create",
+  "createUser": "Create user",
+  "editUser": "Edit user",
+  "deleteUser": "Delete user",
+  "confirmDelete": "Are you sure you want to delete?",
+  "admin": "Administrator",
+  "user": "User",
+  "moderator": "Moderator"
+}
+
