@@ -1,0 +1,39 @@
+{
+  "Gosec": {
+    "nosec": false,
+    "no-fail": false,
+    "severity": "medium",
+    "confidence": "medium",
+    "rules": {
+      "G101": {
+        "pattern": "(?i)(password|pass|passwd|pwd)",
+        "severity": "high",
+        "confidence": "high"
+      },
+      "G104": {
+        "audit": true
+      },
+      "G401": {
+        "severity": "high"
+      },
+      "G501": {
+        "severity": "high"
+      },
+      "G601": {
+        "severity": "high"
+      }
+    },
+    "exclude-dirs": [
+      "vendor",
+      "test"
+    ],
+    "exclude-rules": [
+      {
+        "id": "G104",
+        "paths": [
+          "internal/usecase/models"
+        ]
+      }
+    ]
+  }
+}
