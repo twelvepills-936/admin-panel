@@ -6,6 +6,7 @@
 *.dylib
 bin/
 dist/
+dist-ssr
 
 # Test binary
 *.test
@@ -15,25 +16,38 @@ dist/
 
 # Dependency directories
 vendor/
+node_modules
 
 # Go workspace file
 go.work
 
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
 # Environment variables
 .env
 .env.local
+.env.production
 
 # IDE
 .idea/
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 *.swp
 *.swo
 *~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-

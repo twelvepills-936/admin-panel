@@ -1,0 +1,26 @@
+.layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  position: relative;
+  width: 1512px;
+  height: 982px;
+  background: #F4F4F0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 84px 0px;
+  gap: 24px;
+  width: 1016px;
+  height: 982px;
+  overflow-y: scroll;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 1;
+}
+

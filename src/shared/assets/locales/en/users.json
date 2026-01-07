@@ -1,0 +1,9 @@
+{
+  "title": "Users",
+  "createUser": "Create user",
+  "searchPlaceholder": "Search by name or email...",
+  "noUsers": "No users found",
+  "loading": "Loading users...",
+  "error": "Error loading users"
+}
+

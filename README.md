@@ -1,8 +1,20 @@
-# Admin Panel Backend
+# Admin Panel
+
+Полнофункциональная админ-панель с разделением на backend и frontend части.
+
+## Структура проекта
+
+Проект состоит из двух частей:
+- **Backend** - сервис на Go с PostgreSQL
+- **Frontend** - веб-приложение на React с TypeScript
+
+---
+
+## Backend
 
 Бэкэнд сервис для админ-панели на Go с PostgreSQL, реализованный согласно Code Style Guide проекта.
 
-## Технологический стек
+### Технологический стек
 
 - Go 1.24.2
 - Gin framework для HTTP API
@@ -11,7 +23,7 @@
 - JWT для аутентификации
 - Goose для миграций БД
 
-## Структура проекта
+### Структура проекта
 
 ```
 root
@@ -43,14 +55,14 @@ root
 └── Makefile
 ```
 
-## Установка и запуск
+### Установка и запуск Backend
 
-### Предварительные требования
+#### Предварительные требования
 
 - Docker и Docker Compose (для PostgreSQL)
 - Go 1.23+ (для запуска приложения локально)
 
-### Локальная разработка
+#### Локальная разработка
 
 1. Клонируйте репозиторий
 2. Скопируйте `.env.example` в `.env` и настройте переменные окружения:
@@ -60,103 +72,160 @@ root
    **Важно:** Измените `JWT_SECRET` на безопасный случайный ключ!
 
 3. Запустите только PostgreSQL (через Docker):
-
-   **Windows (PowerShell):**
    ```powershell
    docker-compose up -d postgres
-   ```
-   или используйте скрипт:
-   ```powershell
-   .\docker-up.ps1
-   ```
-
-   **Linux/Mac:**
-   ```bash
-   docker-compose up -d postgres
-   ```
-   или:
-   ```bash
-   make docker-up
    ```
 
 4. Дождитесь готовности PostgreSQL (около 10 секунд), затем выполните миграции:
-
-   **Windows (PowerShell):**
-   ```powershell
-   .\migrate-up.ps1
-   ```
-   или напрямую (если установлен goose):
    ```powershell
    goose -dir ./internal/migrations postgres "postgres://postgres:postgres@localhost:5432/adminkaback?sslmode=disable" up
    ```
 
-   **Linux/Mac:**
-   ```bash
-   make migrate-up
-   ```
-
-5. Установите зависимости Go (если еще не установлены):
+5. Установите зависимости Go:
    ```bash
    go mod download
    ```
 
 6. Запустите приложение:
-
-   **Windows (PowerShell):**
-   ```powershell
-   .\run.ps1
-   ```
-   или напрямую:
    ```powershell
    go run cmd/service/main.go
    ```
 
-   **Linux/Mac:**
-   ```bash
-   make run
-   ```
-   или:
-   ```bash
-   go run cmd/service/main.go
-   ```
+### API Endpoints
 
-### Запуск только PostgreSQL
+#### Аутентификация
 
-Если нужно запустить только базу данных без приложения:
+- `POST /api/v1/auth/register` - Регистрация администратора
+- `POST /api/v1/auth/login` - Вход в систему
+- `POST /api/v1/auth/refresh` - Обновление токена
+- `POST /api/v1/auth/logout` - Выход из системы
+- `GET /api/v1/auth/me` - Получение текущего администратора (требует авторизации)
 
-```powershell
-docker-compose up -d postgres
+#### Health Check
+
+- `GET /_hc` - Проверка состояния сервиса
+
+### Формат ответов
+
+#### Успешный ответ:
+```json
+{
+  "success": true,
+  "data": {...}
+}
 ```
 
-Остановка:
-```powershell
-docker-compose down
+#### Ошибка:
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Error message"
+  }
+}
 ```
 
-### Docker
+### Миграции
 
-**Важно:** Перед запуском создайте `.env` файл с настройками (см. `.env.example` или `ENV_EXAMPLE.md`). Особенно важно установить безопасный `JWT_SECRET` (минимум 32 символа).
+Создание новой миграции:
+```bash
+make migrate-create
+```
+
+Применить миграции:
+```bash
+make migrate-up
+```
+
+Откатить миграции:
+```bash
+make migrate-down
+```
+
+### Архитектура
+
+Проект следует принципам Clean Architecture:
+- Интерфейсы централизованы в `internal/domain.go`
+- Разделение слоев: usecase → repository → service
+- Все зависимости через конструкторы
+- Все публичные методы принимают `context.Context`
+
+---
+
+## Frontend
+
+Веб-приложение админ панели на React с TypeScript.
+
+### Технологии
+
+- React 18
+- TypeScript
+- Vite
+- React Router v6
+- React Query (TanStack Query)
+- Axios
+- i18next
+- SCSS
+
+### Установка
 
 ```bash
-# Скопируйте пример конфигурации
-cp .env.example .env
-
-# Отредактируйте .env и установите JWT_SECRET
-# Затем запустите
-docker-compose up -d
+npm install
 ```
 
-или в PowerShell:
-```powershell
-# Скопируйте пример конфигурации
-Copy-Item .env.example .env
+### Разработка
 
-# Отредактируйте .env и установите JWT_SECRET
-# Затем запустите
-docker-compose up -d
+```bash
+npm run dev
 ```
 
-**Примечание:** Если видите ошибку `JWT_SECRET must be set and changed from default`, убедитесь, что в `.env` файле установлен безопасный `JWT_SECRET` (не равный `your-secret-key-change-in-production`). См. `DOCKER_SETUP.md` для подробностей.
+Приложение будет доступно по адресу `http://localhost:3000`
+
+### Сборка
+
+```bash
+npm run build
+```
+
+### Переменные окружения
+
+Создайте файл `.env` в корне проекта на основе `env.example`:
+
+```
+VITE_API_URL=http://localhost:5001
+```
+
+Или скопируйте файл:
+```bash
+cp env.example .env
+```
+
+### Структура проекта
+
+```
+src/
+├── features/          # Переиспользуемые фичи
+├── pages/            # Страницы приложения
+├── providers/        # React провайдеры
+├── shared/           # Общие ресурсы
+│   ├── api/         # API клиент и запросы
+│   ├── assets/      # Статические ресурсы
+│   ├── constants/   # Константы
+│   ├── ui/          # UI компоненты
+│   └── utils/       # Утилиты
+└── App.tsx
+```
+
+### Интеграция с бэкендом
+
+Все API запросы идут через `/api` endpoint. Настройте proxy в `vite.config.ts` или используйте переменную окружения `VITE_API_URL`.
+
+### Авторизация
+
+Токен авторизации сохраняется в `localStorage` под ключом `auth_token` и автоматически добавляется в заголовки всех API запросов.
+
+---
 
 ## Создание первого администратора
 
@@ -178,85 +247,3 @@ curl -X POST http://localhost:8090/api/v1/auth/register \
 - Email: `admin@example.com`
 - Пароль: `admin123`
 - Имя: `Admin User`
-
-См. `CREATE_FIRST_ADMIN.md` для подробностей.
-
-## API Endpoints
-
-### Аутентификация
-
-- `POST /api/v1/auth/register` - Регистрация администратора
-- `POST /api/v1/auth/login` - Вход в систему
-- `POST /api/v1/auth/refresh` - Обновление токена
-- `POST /api/v1/auth/logout` - Выход из системы
-- `GET /api/v1/auth/me` - Получение текущего администратора (требует авторизации)
-
-### Health Check
-
-- `GET /_hc` - Проверка состояния сервиса
-
-## Формат ответов
-
-### Успешный ответ:
-```json
-{
-  "success": true,
-  "data": {...}
-}
-```
-
-### Ошибка:
-```json
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Error message"
-  }
-}
-```
-
-## Переменные окружения
-
-См. `.env.example` для полного списка переменных окружения.
-
-## Миграции
-
-Создание новой миграции:
-```bash
-make migrate-create
-```
-
-Применить миграции:
-```bash
-make migrate-up
-```
-
-Откатить миграции:
-```bash
-make migrate-down
-```
-
-## Линтинг
-
-```bash
-make lint
-```
-
-## Архитектура
-
-Проект следует принципам Clean Architecture:
-- Интерфейсы централизованы в `internal/domain.go`
-- Разделение слоев: usecase → repository → service
-- Все зависимости через конструкторы
-- Все публичные методы принимают `context.Context`
-
-## Code Style Guide
-
-Код строго следует Code Style Guide проекта:
-- Использование pgx/v5 и Squirrel (НЕ GORM)
-- Ошибки объявляются в `internal/usecase/models/`
-- Правильное именование (пакеты строчными, ошибки Err..., булевы is/has)
-- Разделение импортов (стандартная библиотека отдельно)
-- Запрет внешних вызовов внутри транзакций БД
-
